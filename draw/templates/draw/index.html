@@ -44,7 +44,13 @@
       //     'wss://<your url here>/ws/draw');
   
       // create a new websocket connecting to the server
-      var socket = new WebSocket('wss://p3-websockets-bell-wu-wubell397257.codeanyapp.com/ws/draw');
+      var ws = new WebSocket('wss://p3-websockets-bell-wu-wubell397257.codeanyapp.com/ws/draw');
+      
+      ws.onmessage = function (msg) {
+    console.log(msg); // prints message when receive
+}
+setTimeout(function() { ws.send('I love rutabagas!'); }, 2000);
+
 
 //       // triggered when receiving a message from the server
 //       socket.onmessage = function(receivedMessage) {
