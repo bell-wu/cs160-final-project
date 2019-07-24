@@ -16,7 +16,7 @@
 </head>
 <body>
     <!-- You may change the dimensions of this canvas -->
-    <canvas id="myCanvas" width="1000px" height="1000px" style="border-style: solid"></canvas>
+    <canvas id="myCanvas" width="1000px" height="750px" style="border-style: solid"></canvas>
 </body>
 <script>
     paper.install(window);
@@ -52,20 +52,24 @@
         ws.send(JSON.stringify(obj));
         myPath.add(event.point);
         myPath.strokeColor = user_id;
+        myPath.strokeWidth = 5;
       }
       
       ws.onmessage = function (msg) {
-        console.log(msg);
-        var newPath = JSON.parse(msg.data);
-        var id = newPath.color;
-        var x = newPath.x;
-        var y = newPath.y;
-        if (!(id in users)) {
-          users[id] = new Path();
-        }
-        console.log(users);
-        users[id].add(new Point(x, y));
-        users[id].strokeColor = id;
+//         if (url.indexOf("?size=large") >= 0) {
+          console.log(msg);
+          var newPath = JSON.parse(msg.data);
+          var id = newPath.color;
+          var x = newPath.x;
+          var y = newPath.y;
+          if (!(id in users)) {
+            users[id] = new Path();
+          }
+          console.log(users);
+          users[id].add(new Point(x, y));
+          users[id].strokeColor = id;
+          users[id].strokeWidth = 5;
+//         }
       }
 
 
