@@ -16,10 +16,11 @@
 </head>
 <body>
     <!-- You may change the dimensions of this canvas -->
-    <canvas id="myCanvas" width="1500px" height="1500px"></canvas>
+    <canvas id="myCanvas" width="1000px" height="1000px" style="border-style: solid"></canvas>
 </body>
 <script>
     paper.install(window);
+  
   
     window.onload = () => {
       // setting up the canvas and one paper tool
@@ -29,27 +30,43 @@
 
       // getting the URL (you may want to use for Exercise 3)
       var url = window.location.href;
-
-      var myPath;
-
-      tool.onMouseDown = function(event) {
-        myPath = new Path();
-        myPath.strokeColor = 'black';
-      }
-
-      tool.onMouseDrag = function(event) {
-        myPath.add(event.point);
-      }
-      // var socket = new WebSocket(
-      //     'wss://<your url here>/ws/draw');
-  
-      // create a new websocket connecting to the server
+      
       var ws = new WebSocket('wss://p3-websockets-bell-wu-wubell397257.codeanyapp.com/ws/draw');
       
+      var user_id = makeRandomColor();
+      var users = {};
+          
+      // https://stackoverflow.com/questions/1484506/random-color-generator
+      function makeRandomColor(){
+        return '#'+Math.random().toString(16).substr(-6);
+      }
+      
+      var myPath = new Path();
+
+      tool.onMouseMove = function(event) {
+        var obj = {
+          x: event.point.x,
+          y: event.point.y,
+          color: user_id
+        }
+        ws.send(JSON.stringify(obj));
+        myPath.add(event.point);
+        myPath.strokeColor = user_id;
+      }
+      
       ws.onmessage = function (msg) {
-    console.log(msg); // prints message when receive
-}
-setTimeout(function() { ws.send('I love rutabagas!'); }, 2000);
+        console.log(msg);
+        var newPath = JSON.parse(msg.data);
+        var id = newPath.color;
+        var x = newPath.x;
+        var y = newPath.y;
+        if (!(id in users)) {
+          users[id] = new Path();
+        }
+        console.log(users);
+        users[id].add(new Point(x, y));
+        users[id].strokeColor = id;
+      }
 
 
 //       // triggered when receiving a message from the server
