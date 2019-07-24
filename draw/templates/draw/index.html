@@ -22,7 +22,7 @@
     paper.install(window);
   
   
-    window.onload = () => {
+    $(document).ready(function() { 
       // setting up the canvas and one paper tool
       var canvas = document.getElementById('myCanvas');
       paper.setup(canvas);
@@ -56,8 +56,7 @@
       }
       
       ws.onmessage = function (msg) {
-//         if (url.indexOf("?size=large") >= 0) {
-          console.log(msg);
+        if (url.indexOf("?size=large") >= 0) {
           var newPath = JSON.parse(msg.data);
           var id = newPath.color;
           var x = newPath.x;
@@ -65,28 +64,30 @@
           if (!(id in users)) {
             users[id] = new Path();
           }
-          console.log(users);
           users[id].add(new Point(x, y));
           users[id].strokeColor = id;
           users[id].strokeWidth = 5;
-//         }
+        }
       }
+      
+      window.addEventListener('devicemotion', (event) => {
+        if ((Math.abs(event.acceleration.x) + Math.abs(event.acceleration.y) + Math.abs(event.acceleration.z)) > 25) {
+          paper.project.activeLayer.removeChildren();
+        }
+      });
+      
+      window.addEventListener('deviceorientation', (event) => { 
+        if (event.gamma > 30) {
+          myPath.strokeColor = makeRandomColor();
+        }
+      });
 
-
-//       // triggered when receiving a message from the server
-//       socket.onmessage = function(receivedMessage) {
-//         // do something when you receive a message
-//       };
-
-//       // use when sending a message to the server
-//       // to be broadcasted to all clients, please add a delay
-//       socket.send(message);
-
-//       // notify console if socket closes unexpectedly
-//       socket.onclose = function(e) {
-//           console.error('Chat socket closed unexpectedly');
-//       };
-    }
+      // notify console if socket closes unexpectedly
+      ws.onclose = function(e) {
+          console.error('Chat socket closed unexpectedly');
+      };
+    });
+    
 
 
 </script>
