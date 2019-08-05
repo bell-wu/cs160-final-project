@@ -1,0 +1,23 @@
+.w3-top {
+  background-color: #78909C;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.center-shapes {
+  position: relative;
+  display: inline;
+  top: 15px;
+  left: 565px;
+}
+
+.center-shapes > a {
+  padding: 8px;
+}
+
+.material-icons {
+  color: white;
+}
+
+.material-icons:hover {
+  color: #FF80AB;
+}

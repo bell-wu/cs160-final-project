@@ -2,93 +2,57 @@
 
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>P4 Drawing</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Story Editor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'draw/vendor/bootstrap/css/bootstrap.min.css' %}">
+  <script type="text/javascript" src="{% static 'draw/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'draw/vendor/paper/paper-full.min.js' %}"></script>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
+  <!-- Add icon library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'draw/index.css' %}">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="{% static 'draw/vendor/bootstrap/css/bootstrap.min.css' %}">
-    <script type="text/javascript" src="{% static 'draw/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'draw/vendor/paper/paper-full.min.js' %}"></script>
-
-    <style type="text/css">
-    </style>
 
 </head>
+
 <body>
-    <!-- You may change the dimensions of this canvas -->
-    <canvas id="myCanvas" width="1000px" height="750px" style="border-style: solid"></canvas>
+
+  <!-- Navbar -->
+  <div class="w3-top">
+
+    <div class="w3-bar w3-card" id="navBar">
+      <a href="javascript:void(0)" class="w3-padding-large w3-hide-small w3-left"><i class="material-icons">folder_open</i></a>
+
+      <!--       <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+      <a href="#" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+      <a href="#band" class="w3-bar-item w3-button w3-padding-large w3-hide-small">BAND</a>
+      <a href="#tour" class="w3-bar-item w3-button w3-padding-large w3-hide-small">TOUR</a>
+      <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">CONTACT</a>
+      <div class="w3-dropdown-hover w3-hide-small">
+        <button class="w3-padding-large w3-button" title="More">MORE <i class="fa fa-caret-down"></i></button>
+        <div class="w3-dropdown-content w3-bar-block w3-card-4">
+          <a href="#" class="w3-bar-item w3-button">Merchandise</a>
+          <a href="#" class="w3-bar-item w3-button">Extras</a>
+          <a href="#" class="w3-bar-item w3-button">Media</a>
+        </div>
+      </div> -->
+      <div class="center-shapes">
+        <a href="javascript:void(0)" class="w3-hide-small"><i class="material-icons">panorama_fish_eye</i></a>
+        <a href="javascript:void(0)" class="w3-hide-small"><i class="material-icons">crop_5_4</i></a>
+        <a href="javascript:void(0)" class="w3-hide-small"><i class="material-icons">details</i></a>
+      </div>
+
+      <a href="javascript:void(0)" class="w3-padding-large w3-hide-small w3-right"><i class="material-icons">save_alt</i></a>
+
+    </div>
+  </div>
+
 </body>
-<script>
-    paper.install(window);
-  
-  
-    $(document).ready(function() { 
-      // setting up the canvas and one paper tool
-      var canvas = document.getElementById('myCanvas');
-      paper.setup(canvas);
-      var tool = new paper.Tool();
 
-      // getting the URL (you may want to use for Exercise 3)
-      var url = window.location.href;
-      
-      var ws = new WebSocket('wss://p3-websockets-bell-wu-wubell397257.codeanyapp.com/ws/draw');
-      
-      var user_id = makeRandomColor();
-      var users = {};
-          
-      // https://stackoverflow.com/questions/1484506/random-color-generator
-      function makeRandomColor(){
-        return '#'+Math.random().toString(16).substr(-6);
-      }
-      
-      var myPath = new Path();
-
-      tool.onMouseMove = function(event) {
-        var obj = {
-          x: event.point.x,
-          y: event.point.y,
-          color: user_id
-        }
-        ws.send(JSON.stringify(obj));
-        myPath.add(event.point);
-        myPath.strokeColor = user_id;
-        myPath.strokeWidth = 20;
-      }
-      
-      ws.onmessage = function (msg) {
-        if (url.indexOf("?size=large") >= 0) {
-          var newPath = JSON.parse(msg.data);
-          var id = newPath.color;
-          var x = newPath.x;
-          var y = newPath.y;
-          if (!(id in users)) {
-            users[id] = new Path();
-          }
-          users[id].add(new Point(x, y));
-          users[id].strokeColor = id;
-          users[id].strokeWidth = 5;
-        }
-      }
-      
-      window.addEventListener('devicemotion', (event) => {
-        if ((Math.abs(event.acceleration.x) + Math.abs(event.acceleration.y) + Math.abs(event.acceleration.z)) > 25) {
-          paper.project.activeLayer.removeChildren();
-        }
-      });
-      
-      window.addEventListener('deviceorientation', (event) => { 
-        if (event.gamma > 30) {
-          myPath.strokeColor = makeRandomColor();
-        }
-      });
-
-      // notify console if socket closes unexpectedly
-      ws.onclose = function(e) {
-          console.error('Chat socket closed unexpectedly');
-      };
-    });
-    
-
-
-</script>
 </html>
