@@ -43,9 +43,9 @@
         </div>
       </div> -->
       <div class="center-shapes">
-        <a href="javascript:void(0)" class="w3-hide-small"><i class="material-icons">panorama_fish_eye</i></a>
-        <a href="javascript:void(0)" class="w3-hide-small"><i class="material-icons">crop_5_4</i></a>
-        <a href="javascript:void(0)" class="w3-hide-small"><i class="material-icons">details</i></a>
+        <a onclick = "clickCircle()" href="javascript:void(0)" class="w3-hide-small"><i id="circle" class="material-icons">panorama_fish_eye</i></a>
+        <a onclick = "clickRect()" href="javascript:void(0)" class="w3-hide-small"><i id = "rect"class="material-icons">crop_5_4</i></a>
+        <a onclick = "clickTri()" href="javascript:void(0)" class="w3-hide-small"><i  id = "tri"class="material-icons">details</i></a>
       </div>
 
       <a href="javascript:void(0)" class="w3-padding-large w3-hide-small w3-right"><i class="material-icons">save_alt</i></a>
@@ -54,5 +54,33 @@
   </div>
 
 </body>
-
+  <script>
+  function clickCircle(){
+    var element = document.getElementById("circle");
+    var s = document.getElementById("rect");
+    var t = document.getElementById("tri");
+//     element.classList.toggle("clickedStyle");
+    s.style.color = "white";
+    t.style.color = "white";
+    element.style.color = "#FF80AB";
+  }
+    function clickRect(){
+    var element = document.getElementById("rect");
+    var c = document.getElementById("circle");
+    var t = document.getElementById("tri");
+//     element.classList.toggle("clickedStyle");
+    element.style.color = "#FF80AB";
+    c.style.color = "white";
+    t.style.color = "white";
+  }
+    function clickTri(){
+    var element = document.getElementById("tri");
+    var c = document.getElementById("circle");
+    var s = document.getElementById("rect");
+//     element.classList.toggle("clickedStyle");
+    element.style.color = "#FF80AB";
+    c.style.color = "white";
+    s.style.color = "white";
+  }
+  </script>
 </html>
